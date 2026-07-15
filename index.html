@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>我们的专属纪念空间</title>
+    <style>
+        /* --- 样式部分（CSS） --- */
+        :root {
+            --bg-color: #fff5f8;
+            --main-pink: #ff8fa3;
+            --text-color: #555;
+            --shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 0; display: flex; justify-content: center; min-height: 100vh; }
+
+        /* 登录页样式 */
+        #login-page { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; width: 100%; height: 100vh; background: white; }
+        .heart { font-size: 60px; color: var(--main-pink); margin-bottom: 20px; animation: beat 1.2s infinite; }
+        @keyframes beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        input[type="password"] { padding: 12px 20px; border: 2px solid var(--main-pink); border-radius: 25px; outline: none; font-size: 16px; width: 200px; text-align: center; margin-bottom: 15px; }
+        .btn { background-color: var(--main-pink); color: white; border: none; padding: 12px 30px; border-radius: 25px; cursor: pointer; font-size: 16px; transition: background 0.3s; }
+        .btn:hover { background-color: #ff758f; }
+
+        /* 主内容样式 */
+        #main-content { display: none; width: 90%; max-width: 800px; padding: 20px; }
+        header { text-align: center; padding: 20px 0; }
+        header h1 { color: var(--main-pink); margin: 0; font-size: 24px; }
+
+        /* 导航栏 */
+        nav { display: flex; justify-content: space-around; background: white; padding: 10px; border-radius: 15px; box-shadow: var(--shadow); margin-bottom: 20px; }
+        nav a { text-decoration: none; color: var(--text-color); font-weight: bold; padding: 10px 20px; border-radius: 10px; }
+        nav a.active { background-color: var(--bg-color); color: var(--main-pink); }
+
+        /* 模块切换 */
+        .content-section { display: none; }
+        .content-section.active { display: block; }
+
+        /* 日记模块样式 */
+        .diary-input { background: white; padding: 15px; border-radius: 15px; box-shadow: var(--shadow); margin-bottom: 20px; }
+        textarea { width: 100%; height: 100px; border: 1px solid #eee; border-radius: 10px; padding: 10px; resize: none; outline: none; box-sizing: border-box; margin-bottom: 10px; }
+        #diary-list { }
+        .diary-item { background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; box-shadow: var(--shadow); position: relative;}
+        .diary-date { font-size: 12px; color: #999; margin-bottom: 5px; }
+        .diary-text { line-height: 1.6; }
+        .delete-btn { position: absolute; right: 10px; top: 10px; color: #ccc; cursor: pointer; font-size: 12px;}
+
+        /* 相册模块样式 */
+        .photo-input { background: white; padding: 15px; border-radius: 15px; box-shadow: var(--shadow); margin-bottom: 20px; display: flex; gap: 10px;}
+        input[type="text"] { flex-grow: 1; padding: 10px; border: 1px solid #eee; border-radius: 10px; outline: none; }
+        .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+        .photo-item { background: white; padding: 5px; border-radius: 10px; box-shadow: var(--shadow); position: relative;}
+        .photo-item img { width: 100%; height: 140px; object-fit: cover; border-radius: 8px; }
+    </style>
+</head>
+<body>
+
+    <!-- 1. 登录页面 -->
+    <div id="login-page">
+        <div class="heart">❤</div>
+        <h2>输入专属暗号</h2>
+        <!-- 💡 请在这里修改你的默认密码，现在是 20250520 -->
+        <input type="password" id="password" placeholder="纪念日或情话">
+        <button class="btn" onclick="checkPassword()">解锁空间</button>
+        <p id="login-error" style="color: red; font-size: 14px; display: none;">暗号不对哦，再想想？</p>
+    </div>
+
+    <!-- 2. 主内容页面（初始隐藏） -->
+    <div id="main-content">
+        <header>
+            <h1>♥ 我们的纪念日记 ♥</h1>
+        </header>
+
+        <nav>
+            <a href="#" class="active" onclick="showSection('diary')">倾诉日记</a>
+            <a href="#" onclick="showSection('photos')">时光相册</a>
+        </nav>
+
+        <!-- 2.1 日记模块 -->
+        <div id="diary-section" class="content-section active">
+            <div class="diary-input">
+                <textarea id="diary-textarea" placeholder="我想对你说..."></textarea>
+                <div style="text-align: right;">
+                    <button class="btn" onclick="addDiary()">记录这一刻</button>
+                </div>
+            </div>
+            <div id="diary-list">
+                <!-- 日记内容将在这里显示 -->
+            </div>
+        </div>
+
+        <!-- 2.2 相册模块 -->
+        <div id="photos-section" class="content-section">
+            <div class="photo-input">
+                <input type="text" id="photo-url" placeholder="粘贴免费图床的照片链接 (URL)">
+                <button class="btn" onclick="addPhoto()">添加</button>
+            </div>
+            <p style="font-size: 12px; color: #999; margin-top: -10px;">免费存图可以使用 ImgBB 等图床服务。</p>
+            <div id="photo-grid" class="photo-grid">
+                <!-- 照片将在这里显示 -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* --- 逻辑部分（JavaScript） --- */
+
+        // 💡 为了让你免费且零基础使用，这些内容都临时存于你本人的浏览器中。
+        // 如需异地实时同步，需要付费后端，这对零基础来说太复杂了。
+        // 你可以先用这个方案，感受网页制作的快乐。
+
+        // 初始化从本地读取数据
+        let diaries = JSON.parse(localStorage.getItem('memorial_diaries')) || [];
+        let photos = JSON.parse(localStorage.getItem('memorial_photos')) || [];
+
+        function saveData() {
+            localStorage.setItem('memorial_diaries', JSON.stringify(diaries));
+            localStorage.setItem('memorial_photos', JSON.stringify(photos));
+        }
+
+        // --- 登录逻辑 ---
+        function checkPassword() {
+            const pass = document.getElementById('password').value;
+            const error = document.getElementById('login-error');
+            // 💡 可以在这里修改密码
+            if (pass === '20250520') { 
+                document.getElementById('login-page').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+                error.style.display = 'none';
+                renderDiaries();
+                renderPhotos();
+            } else {
+                error.style.display = 'block';
+            }
+        }
+
+        // --- 导航切换 ---
+        function showSection(sectionName) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+
+            document.getElementById(sectionName + '-section').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // --- 日记逻辑 ---
+        function addDiary() {
+            const text = document.getElementById('diary-textarea').value;
+            if (!text.trim()) return;
+
+            const now = new Date();
+            const dateStr = `${now.getFullYear()}.${now.getMonth()+1}.${now.getDate()} ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+            diaries.unshift({ date: dateStr, text: text }); // 新日记加在最前面
+            document.getElementById('diary-textarea').value = '';
+            saveData();
+            renderDiaries();
+        }
+
+        function deleteDiary(index) {
+            diaries.splice(index, 1);
+            saveData();
+            renderDiaries();
+        }
+
+        function renderDiaries() {
+            const list = document.getElementById('diary-list');
+            list.innerHTML = '';
+            diaries.forEach((item, index) => {
+                list.innerHTML += `
+                    <div class="diary-item">
+                        <span class="delete-btn" onclick="deleteDiary(${index})">删除</span>
+                        <div class="diary-date">${item.date}</div>
+                        <div class="diary-text">${item.text}</div>
+                    </div>
+                `;
+            });
+        }
+
+        // --- 相册逻辑 ---
+        function addPhoto() {
+            const url = document.getElementById('photo-url').value;
+            if (!url.trim()) return;
+
+            photos.unshift(url); 
+            document.getElementById('photo-url').value = '';
+            saveData();
+            renderPhotos();
+        }
+
+        function deletePhoto(index) {
+            photos.splice(index, 1);
+            saveData();
+            renderPhotos();
+        }
+
+        function renderPhotos() {
+            const grid = document.getElementById('photo-grid');
+            grid.innerHTML = '';
+            photos.forEach((url, index) => {
+                grid.innerHTML += `
+                    <div class="photo-item">
+                        <span class="delete-btn" onclick="deletePhoto(${index})">删除</span>
+                        <img src="${url}" onerror="this.src='https://via.placeholder.com/150?text=链接无效'">
+                    </div>
+                `;
+            });
+        }
+    </script>
+</body>
+</html>
