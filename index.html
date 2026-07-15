@@ -60,7 +60,7 @@
     <div id="login-page">
         <div class="heart">❤</div>
         <h2>输入专属暗号</h2>
-        <!-- 💡 请在这里修改你的默认密码，现在是 20250520 -->
+        <!-- 💡 请在这里修改你的默认密码，现在是 20250625 -->
         <input type="password" id="password" placeholder="纪念日或情话">
         <button class="btn" onclick="checkPassword()">解锁空间</button>
         <p id="login-error" style="color: red; font-size: 14px; display: none;">暗号不对哦，再想想？</p>
@@ -106,9 +106,6 @@
     <script>
         /* --- 逻辑部分（JavaScript） --- */
 
-        // 💡 为了让你免费且零基础使用，这些内容都临时存于你本人的浏览器中。
-        // 如需异地实时同步，需要付费后端，这对零基础来说太复杂了。
-        // 你可以先用这个方案，感受网页制作的快乐。
 
         // 初始化从本地读取数据
         let diaries = JSON.parse(localStorage.getItem('memorial_diaries')) || [];
@@ -124,7 +121,7 @@
             const pass = document.getElementById('password').value;
             const error = document.getElementById('login-error');
             // 💡 可以在这里修改密码
-            if (pass === '20250520') { 
+            if (pass === '20250625') { 
                 document.getElementById('login-page').style.display = 'none';
                 document.getElementById('main-content').style.display = 'block';
                 error.style.display = 'none';
